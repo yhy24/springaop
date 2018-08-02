@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans default-lazy-init="true"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop">
+
+<!--《1》   ****************进行springAOP事物管理的注解****************-->
+    <!--使用注解的方式可以成功
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="datasource"/>
+    </bean>
+    <tx:annotation-driven transaction-manager="transactionManager"/>-->
+
+
+    <!--《2》***************进行springAOP事物管理的xml配置方式*************-->
+    <!--使用配置的方式 进行事物的管理-->
+    <!--1，配置事物管理器-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!--2,配置事物属性 对那些方法进行事物管理-->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="select*" read-only="true"/><!--(*) 表示通配符-->
+            <tx:method name="find*" read-only="true"/>
+            <tx:method name="insert*"/>
+            <tx:method name="update*"/>
+            <tx:method name="*"/>
+        </tx:attributes>
+    </tx:advice>
+    <!--3,配置事物切入点，以及事物切入点和事物属性关联起来-->
+    <aop:config>
+        <aop:pointcut id="txPointCut" expression="execution(* com.spring.aop.service..*(..))"/><!--配置那些类中的方法-->
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointCut"/>   <!--进行事物的属性和切入点的关联-->
+    </aop:config>
+<!--z基于支持基于注解的aspectj   com.spring.aop.log.LogService-->
+<aop:aspectj-autoproxy/>
+
+</beans>
