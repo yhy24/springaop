@@ -165,6 +165,13 @@
       <artifactId>spring-aspects</artifactId>
       <version>5.0.8.RELEASE</version>
     </dependency>
+    <!--小辣椒的使用-->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.16.18</version>
+    </dependency>
+
 
   </dependencies>
 
